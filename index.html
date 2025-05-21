@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wyjazd do Wrocławia – Dzień Dziecka</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, #fffde7 0%, #ffecb3 100%);
+      margin: 0;
+      padding: 0;
+      color: #444;
+    }
+    .container {
+      max-width: 720px;
+      margin: 30px auto;
+      background: #fffef4;
+      border-radius: 24px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.06);
+      padding: 32px;
+    }
+    h1, h2, h3 {
+      text-align: center;
+    }
+    h1 {
+      color: #f57c00;
+      font-size: 2.3em;
+      margin-bottom: 0.4em;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+    h2 {
+      color: #1976d2;
+      margin-top: 2em;
+      margin-bottom: 0.7em;
+      font-size: 1.5em;
+      border-bottom: 2px solid #bbdefb;
+      display: inline-block;
+      padding-bottom: 5px;
+    }
+    h3 {
+      margin-bottom: 0.3em;
+      color: #388e3c;
+    }
+    p {
+      line-height: 1.6;
+    }
+    .agenda {
+      margin: 1.2em 0 2em 0;
+      padding-left: 0;
+      list-style: none;
+    }
+    .agenda-day {
+      background: #e3f2fd;
+      margin-bottom: 14px;
+      border-radius: 10px;
+      padding: 14px 18px 10px 18px;
+      font-size: 1.08em;
+    }
+    .agenda-date {
+      font-weight: bold;
+      color: #1976d2;
+      margin-bottom: 8px;
+      display: block;
+      font-size: 1.07em;
+    }
+    .agenda-event {
+      margin-left: 110px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: baseline;
+      font-size: 1.03em;
+    }
+    .agenda-hour {
+      font-weight: bold;
+      color: #388e3c;
+      min-width: 62px;
+      display: inline-block;
+      margin-right: 18px;
+      font-size: 1.07em;
+    }
+    @media (max-width: 700px) {
+      .container { padding: 16px; }
+      #map { height: 280px; }
+      .agenda-event { flex-direction: column; align-items: flex-start; margin-left: 10px; }
+      .agenda-hour { margin-bottom: 2px; margin-right: 0; }
+      .signature-right { text-align: left; }
+    }
+    .info-section {
+      margin: 2em 0;
+      border-radius: 12px;
+      background: #f1f8e9;
+      padding: 18px;
+      box-shadow: 0 2px 10px rgba(30, 60, 90, 0.04);
+      animation: fadeIn 1s ease-in;
+    }
+    .info-section a {
+      color: #ef6c00;
+      text-decoration: underline;
+    }
+    .map-section {
+      margin: 2.5em 0 1em 0;
+      text-align: center;
+    }
+    #map {
+      width: 100%;
+      height: 380px;
+      border-radius: 16px;
+      border: 2px solid #1976d2;
+      margin-top: 10px;
+    }
+    .footer {
+      text-align: center;
+      color: #888;
+      font-size: 0.95em;
+      margin-top: 40px;
+    }
+    .heart {
+      color: #ef6c00;
+      font-size: 1.5em;
+      vertical-align: middle;
+    }
+    .btn {
+      display: inline-block;
+      background-color: #f57c00;
+      color: white;
+      padding: 12px 22px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s;
+      margin-top: 24px;
+    }
+    .btn:hover {
+      background-color: #e65100;
+    }
+    .signature-right {
+      text-align: right;
+      margin-bottom: 3em;
+      font-size: 1.05em;
+      padding-right: 100px;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Zaproszenie na rodzinny wyjazd<br>do Wrocławia!</h1>
+    <p style="text-align:center; margin-bottom: 1.6em; font-size: 1.15em;">
+      Kochani! <br>
+      Z okazji Dnia Dziecka zapraszamy Was – naszą ukochaną córkę Agatkę, zięcia Andrzejka i wnuczkę Zuzię – na wspólną, rodzinną wyprawę do Wrocławia!
+      <br><br>
+      Jedziemy w „obypiątkę” – razem będzie jeszcze weselej! <br>
+      Czekają na nas wspólne przygody, odwiedziny w Hydropolis, ZOO, Muzeum Iluzji… <br>
+      ...a po drodze... będziemy wypatrywać Wrocławskich Krasnali! 🧙‍♂️
+    </p>
+    <p class="signature-right">Mama i Tata</p>
+
+    <h2>Plan wyjazdu</h2>
+    <ul class="agenda">
+      <li class="agenda-day">
+        <span class="agenda-date">30 maja (piątek):</span>
+        <div class="agenda-event"><span class="agenda-hour">17:00</span>Wyjazd z Łodzi</div>
+      </li>
+      <li class="agenda-day">
+        <span class="agenda-date">31 maja (sobota):</span>
+        <div class="agenda-event"><span class="agenda-hour">12:00</span>Wycieczka do HYDROPOLIS</div>
+        <div class="agenda-event"><span class="agenda-hour">15:00</span>Odwiedziny w ZOO</div>
+        <div class="agenda-event"><span class="agenda-hour">19:00</span>Kolacja rodzinna w Dřevný Kocůr OVO</div>
+      </li>
+      <li class="agenda-day">
+        <span class="agenda-date">1 czerwca (niedziela):</span>
+        <div class="agenda-event"><span class="agenda-hour">12:00</span>Muzeum Iluzji</div>
+      </li>
+    </ul>
+
+    <div style="text-align:center;">
+      <a href="mailto:anna_piela-obidzinska@o2.pl?subject=Potwierdzenie wyjazdu do Wrocławia" class="btn">Potwierdź udział</a>
+    </div>
+
+    <h2>Informacje o hotelu i atrakcjach</h2>
+
+    <div class="info-section">
+      <h3>🏨 DoubleTree by Hilton Wrocław</h3>
+      <p>
+        Komfortowy, nowoczesny hotel położony w centrum Wrocławia, z wygodnymi pokojami i pysznym śniadaniem.
+        <br>
+        <a href="https://www.hilton.com/en/hotels/wrowddi-doubletree-wroclaw/" target="_blank">Strona hotelu</a><br>
+        Adres: ul. Podwale 84, 50-414 Wrocław
+      </p>
+    </div>
+
+    <div class="info-section">
+      <h3>💧 Hydropolis</h3>
+      <p>
+        Nowoczesne centrum wiedzy o wodzie – interaktywne wystawy, eksperymenty, zabawa i nauka dla całej rodziny!
+        <br>
+        <a href="https://hydropolis.pl/" target="_blank">hydropolis.pl</a><br>
+        Adres: ul. Na Grobli 19-21, 50-421 Wrocław
+      </p>
+    </div>
+
+    <div class="info-section">
+      <h3>🦁 Wrocławskie ZOO</h3>
+      <p>
+        Jeden z największych ogrodów zoologicznych w Polsce – tysiące zwierząt z całego świata i słynne Afrykarium!
+        <br>
+        <a href="https://zoo.wroclaw.pl/" target="_blank">zoo.wroclaw.pl</a><br>
+        Adres: ul. Wróblewskiego 1-5, 51-618 Wrocław
+      </p>
+    </div>
+
+    <div class="info-section">
+      <h3>🪄 Muzeum Iluzji</h3>
+      <p>
+        Miejsce pełne magii i złudzeń optycznych – świetna zabawa i mnóstwo zdjęć!
+        <br>
+        <a href="https://muzeumiluzjiwr.pl/" target="_blank">muzeumiluzjiwr.pl</a><br>
+        Adres: Rynek 36, 50-102 Wrocław
+      </p>
+    </div>
+
+    <div class="info-section">
+      <h3>🍽️ Dřevný Kocůr OVO</h3>
+      <p>
+        Kolacja rodzinna w sobotę o 19:00 w sercu Wrocławia.
+        <br>
+        <a href="https://drevnykocur.pl/wroclawovo/" target="_blank">drevnykocur.pl/wroclawovo</a><br>
+        Adres: Podwale 83, 50-414 Wrocław
+      </p>
+    </div>
+
+    <div class="info-section">
+      <h3>🧙‍♂️ Wrocławskie Krasnale</h3>
+      <p>
+        We Wrocławiu mieszka ponad 400 krasnali! Można je tropić spacerując po mieście albo... z pomocą aplikacji:
+        <br>
+        <a href="https://play.google.com/store/apps/details?id=pl.vratislavia.wroclawskiekrasnale" target="_blank">
+          Wrocławskie Krasnale – pobierz z Google Play
+        </a>
+      </p>
+    </div>
+
+    <div class="map-section">
+      <h2>Mapa atrakcji</h2>
+      <div id="map"></div>
+      <p style="font-size:0.92em; color:#666; margin-top:7px;">Kliknij pinezki, by zobaczyć szczegóły.</p>
+    </div>
+
+    <div class="footer">
+      <span style="font-size:0.86em;">Do zobaczenia we Wrocławiu!</span>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    const locations = [
+      ["DoubleTree by Hilton Wrocław", 51.10932, 17.04132, "🏨 DoubleTree by Hilton Wrocław<br>ul. Podwale 84"],
+      ["Hydropolis", 51.09844, 17.05631, "💧 Hydropolis<br>ul. Na Grobli 19-21"],
+      ["Wrocławskie ZOO", 51.10602, 17.07766, "🦁 Wrocławskie ZOO<br>ul. Wróblewskiego 1-5"],
+      ["Muzeum Iluzji", 51.10903, 17.03276, "🪄 Muzeum Iluzji<br>Rynek 36"],
+      ["Dřevný Kocůr OVO", 51.10908, 17.04012, "🍽️ Dřevný Kocůr OVO<br>Podwale 83, 50-414 Wrocław"]
+    ];
+
+    const map = L.map('map').setView([51.105, 17.05], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap',
+      maxZoom: 18
+    }).addTo(map);
+
+    locations.forEach(([name, lat, lng, desc]) => {
+      const marker = L.marker([lat, lng]).addTo(map);
+      marker.bindPopup(`<b>${name}</b><br>${desc}`);
+    });
+  </script>
+</body>
+</html>
